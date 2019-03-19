@@ -1,5 +1,6 @@
 TEST INSTRUCTIONS:
-
+clone repo
+bundle install
 rspec spec/login/login_spec.rb
 rspec spec/api/api_login_spec.rb
 

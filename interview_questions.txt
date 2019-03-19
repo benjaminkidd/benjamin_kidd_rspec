@@ -1,0 +1,135 @@
+TEST INSTRUCTIONS:
+
+rspec spec/login/login_spec.rb
+rspec spec/api/api_login_spec.rb
+
+
+2)
+Locate one bug or bad workflow within the app
+
+a) Explain the behavior you are seeing.
+Two possible bugs occur at the login page (https://shop.shipt.com/login).
+A user can attempt to log in with an email address that is missing the top-level domain (e.g. test@shipt instead of test@shipt.com).
+If a user enters invalid log in credentials and repeatedly clicks the Log In button the error message isn't consistent. 
+
+b) Include any useful errors or screenshots.
+The error message alternates from "Invalid Username or Password" or "Failed to Fetch" when the Log In button is repeatedly clicked. 
+
+c) Explain why and how it needs to be improved. 
+The behavior of the log in functionality could be improved. 
+Users could benefit by having the Email text field only accept email addresses that adhere to a valid format.
+Users could also benefit by not having the ability to click the log in button repeatedly. 
+Both of these issues could be resolved by having a Log In button that is greyed out at certain points of the flow.
+The Log In button would start greyed out until the user's credentials meet a valid format.
+Once the Log In button is clicked once by the user it would become greyed out again until the next page loads to avoid multiple Log In attempts. 
+
+d) What are the steps you would take to report the issue.
+I would speak to the team that works on the particular application or feature where the possible bug is located. 
+I would also follow any formal bug reporting procedures such as creating a ticket on the appropriate team's 
+SCRUM board and attaching it to appropriate feature. 
+
+e) What priority would you give this bug? (1-5) 1 being highest
+These two bugs would both be a five. 
+Neither bug prevents the user from using the web site.
+Neither bug affects the rest of the web site nor would they corrupt data. 
+Fixing the bugs would lead to an easier user experience by reducing the number of errors that a user could make.
+
+3)
+What are the possible reasons for the following defect? How would you go about
+debugging the problem and gathering more information?
+On a web application, a user adds a phone number to their account. The user
+then changes the phone number. Upon trying to re-enter the first phone number,
+the user is allowed to click Save, and it seems to work, but the saved number
+remains the second number rather than updating to the more recently entered
+number. A page refresh does not change the result.
+
+This error could be caused by incorrect API calls being sent by the web application.
+The updated phone number may appear correct on screen if the client side logic updates the number on screen 
+rather than displaying the phone number that currently exists on the backend. 
+This bug could be diagnosed by looking at the client side logic of the web application to see what is actually 
+updating the phone number field. It could be the case that the client side logic displays all the information a user 
+changes on screen and but doesn't update the information on the backend until the end of the flow such as 
+a user clicking a "Save All" button or navigating to the next page. 
+This error might also be caused by improper data management. 
+The user's phone number may be stored in multiple locations. 
+If one page retrieves the phone number from one database and the second page retrieves it from another then 
+this could explain the behavior because the phone number may not have been updated in both locations.      
+
+
+SQL
+
+1. List the stores allowed to sell alcohol
+[Gettar]
+SELECT * from interview.stores WHERE allowed_alcohol = true
+
+2. Give the product name of the 2 most expensive items based on their price at store id 1
+[Golden Banana, Banana]
+SELECT 
+	interview.products.name
+FROM
+	interview.products
+		LEFT JOIN
+	interview.store_prices ON interview.products.id = interview.store_prices.product_id
+WHERE
+	interview.store_prices.store_id = 1 ORDER BY interview.store_prices.price DESC LIMIT 2;
+
+3. List the products that are not sold in the store id 2
+[Banana, Grapes, Golden Banana]
+
+SELECT 
+	interview.products.name
+FROM
+	interview.products
+		LEFT JOIN
+	interview.store_prices ON interview.products.id = interview.store_prices.product_id
+WHERE
+	interview.store_prices.store_id != 2;
+	
+4. What is the most popular item sold?
+[Banana]
+
+SELECT product_id, COUNT(*) AS popularity 
+FROM interview.order_lines
+GROUP BY product_id
+ORDER BY popularity DESC LIMIT 1
+
+5. Write a SQL statement to update the line_total field
+SET @line_count = (SELECT COUNT(*) FROM interview.order_lines);
+UPDATE interview.order_lines
+SET line_total = @line_count;
+
+
+Automation Assessment:
+
+1. If you chose to use a tool or language other than the recommended, briefly explain why.
+Ruby with Rspec and Capybara was used to create the automated test suite. 
+
+2. How do you debug a failed test in your test framework?
+Debugging a failing test is essential to determining whether a bug has been detected or if it was failure in the test suite run.
+The first step is to read the error in the console log. This will show which line(s) in the test suite caused the failure. 
+Certain errors like NetRead Timeouts are routinely encountered and may indicate a need to insert sleep statements if they occur repeatedly at the same location in the test flow.
+Other errors may indicate an environment being down such as a page failing to load. 
+If the error appears to indicate a real bug then it can be helpful to manually perform the test flow and then observe the code in developer mode on the web browser. 
+Perhaps a change was pushed to the code base where elements were removed or changed. This would cause tests to fail. 
+
+3. What do you believe are the most common causes for instability in UI automation?
+Automated browser tests have some degree of instability by nature. 
+Latency issues or netread timeouts are common and can cause tests to fail on one run but pass the next.
+Third party vendor services can also issues with test data management and make mocking data difficult. 
+Test design can also cause instability if careful thought isn't put into designing the test suite. 
+For instance, using web element selectors based on ids are more stable than xpaths. 
+This is due to the fact that page designs often change and therefore web elements often move around.
+Slight changes to the page design can cause test failures if xpaths are used.
+These same changes may not cause a failure if ids are used because the element would still be found by id even if the xpath is changed. 
+Test environments are another issue in test stability. 
+Environments go down for maintenance or fail.
+
+4. How do you make your tests consistent and easy to debug?
+Proper test design is essential to having consistent and easy to debug test suite.
+Designing tests to be stable can include using ids over xpaths.
+Test design should also consider which parts of a test flow may require short sleeps. 
+Certain parts of a web application may require short sleeps if they routinely fail to find an element. 
+Tests should have error messages that are as descriptive as possible so that reading the console logs provide meaningful insight to what caused a failure. 
+Consistent test suites should have test cases that are easy to read and understand. 
+For instance, if a web element selector is using an xpath it could be saved as an easy to read variable so that the test case is readable.
+This helps keep the code base easy to understand and allows other developers to easily maintain it. 
